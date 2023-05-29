@@ -1,9 +1,15 @@
+import { getAllEvents } from '../../dummy-data';
+import { Fragment } from 'react';
+import EventList from '../../components/events/event-list';
+
 const AllEventspage = () => {
+    const events = getAllEvents();
     return (
-        <div>
-            <h1>Events Page</h1>
-        </div>
+        <Fragment>
+            <EventList events={events} />
+        </Fragment>
     )
 }
+
 
 export default AllEventspage
