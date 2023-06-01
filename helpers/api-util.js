@@ -1,5 +1,5 @@
 export const getAllEvents = async () => {
-    const response = await fetch(`${process.env.FIREBASE_URL}/events.json`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_FIREBASE_URL}/events.json`);
     const data = await response.json();
     const events = [];
     for (const key in data) {
