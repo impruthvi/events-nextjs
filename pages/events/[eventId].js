@@ -1,8 +1,8 @@
-import { getEventById, getFeaturedEvents } from '../../dummy-data'
 import { Fragment } from 'react'
 import EventSummeary from '../../components/event-detail/event-summary'
 import EventLogistics from '../../components/event-detail/event-logistics'
 import EventContent from '../../components/event-detail/event-content'
+import { getEventById, getFeaturedEvents } from '../../helpers/api-util'
 
 const EventDetailPage = ({ event }) => {
 

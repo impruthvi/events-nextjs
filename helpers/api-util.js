@@ -1,4 +1,4 @@
-export const getAllEvebts = async () => {
+export const getAllEvents = async () => {
     const response = await fetch(`${process.env.FIREBASE_URL}/events.json`);
     const data = await response.json();
     const events = [];
@@ -12,11 +12,11 @@ export const getAllEvebts = async () => {
 }
 
 export const getFeaturedEvents = async () => {
-    const allEvents = await getAllEvebts();
+    const allEvents = await getAllEvents();
     return allEvents.filter(event => event.isFeatured);
 }
 
 export const getEventById = async (id) => {
-    const allEvents = await getAllEvebts();
+    const allEvents = await getAllEvents();
     return allEvents.find(event => event.id === id);
 }

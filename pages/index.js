@@ -1,5 +1,5 @@
 import EventList from '../components/events/event-list';
-import { getFeaturedEvents } from '../dummy-data';
+import { getFeaturedEvents } from '../helpers/api-util';
 const HomePage = ({ events }) => {
     return (
         <div>
