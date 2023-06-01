@@ -15,9 +15,8 @@ const FilteredEventsPage = () => {
   const filterData = router.query.slug;
   const { data, error } = useSWR(
     `${process.env.NEXT_PUBLIC_FIREBASE_URL}/events.json`,
-    (url) => fetch(url).then(res => res.json())
+    (url) => fetch(url).then((res) => res.json())
   );
-
 
   useEffect(() => {
     if (data) {
@@ -32,8 +31,21 @@ const FilteredEventsPage = () => {
     }
   }, [data]);
 
+  let pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content="A list of filtered events." />
+    </Head>
+  );
+
+
   if (!loadedEvents) {
-    return <p className="center">Loading...</p>;
+    return (
+      <Fragment>
+        {pageHeadData}
+        <p className="center">Loading...</p>;
+      </Fragment>
+    );
   }
 
   const filteredYear = filterData[0];
@@ -41,6 +53,16 @@ const FilteredEventsPage = () => {
 
   const numYear = +filteredYear;
   const numMonth = +filteredMonth;
+
+  pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`All events for ${numMonth}/${numYear}`}
+      />
+    </Head>
+  );
 
   if (
     isNaN(numYear) ||
@@ -53,6 +75,7 @@ const FilteredEventsPage = () => {
   ) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -74,6 +97,7 @@ const FilteredEventsPage = () => {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
@@ -88,11 +112,7 @@ const FilteredEventsPage = () => {
 
   return (
     <Fragment>
-      <Head>
-        <title>Filtered Events</title>
-        <meta name="description" content={`All events for ${numMonth}/${numYear}`} />
-      </Head>
-      
+      {pageHeadData}
       <ResultsTitle date={dateObj} />
       <EventList events={filteredEvents} />
     </Fragment>
