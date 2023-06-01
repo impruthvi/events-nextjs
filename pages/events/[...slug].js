@@ -5,7 +5,7 @@ import Button from "../../components/ui/button";
 import ErrorAlert from "../../components/ui/error-alert";
 import { Fragment } from "react";
 
-const FilteredEventsPage = ({ hasError, filteredEvents, date }) => {
+const FilteredEventsPage = ({ hasError, events, date }) => {
 
   if (hasError) {
     return (
@@ -20,7 +20,7 @@ const FilteredEventsPage = ({ hasError, filteredEvents, date }) => {
     );
   }
 
-  if (!filteredEvents || filteredEvents.length === 0) {
+  if (!events || events.length === 0) {
     return (
       <Fragment>
         <ErrorAlert>
@@ -38,7 +38,7 @@ const FilteredEventsPage = ({ hasError, filteredEvents, date }) => {
   return (
     <Fragment>
       <ResultsTitle date={dateObj} />
-      <EventList events={filteredEvents} />
+      <EventList events={events} />
     </Fragment>
   );
 };
@@ -78,6 +78,7 @@ export async function getServerSideProps(context) {
     month: numMonth,
   });
 
+
   if (!filteredEvents || filteredEvents.length === 0) {
     return {
       props: {
@@ -92,7 +93,6 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      hasError: false,
       events: filteredEvents,
       date: {
         year: numYear,
