@@ -5,6 +5,7 @@ import ErrorAlert from "../../components/ui/error-alert";
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import Head from "next/head";
 
 const FilteredEventsPage = () => {
   const [loadedEvents, setLoadedEvents] = useState();
@@ -87,6 +88,11 @@ const FilteredEventsPage = () => {
 
   return (
     <Fragment>
+      <Head>
+        <title>Filtered Events</title>
+        <meta name="description" content={`All events for ${numMonth}/${numYear}`} />
+      </Head>
+      
       <ResultsTitle date={dateObj} />
       <EventList events={filteredEvents} />
     </Fragment>
