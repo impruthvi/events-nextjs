@@ -1,19 +1,48 @@
+import { MongoClient } from "mongodb";
+
 const handler = (req, res) => {
   const { eventId } = req.query;
-  const { comment } = req.body;
+
+  const { email, name, text } = req.body;
+
   if (req.method === "POST") {
-    const newComment = {
-      id: new Date().toISOString(),
-      comment,
-    };
-    console.log(newComment);
-    res.status(201).json({ message: "Added comment.", comment: newComment });
+    if (!text || text.trim() === "") {
+      res.status(422).json({ message: "Invalid comment." });
+      return;
+    }
+
+    // Store it in a database
+    const newComment = { eventId, text, email, name };
+
+    MongoClient.connect(process.env.NEXT_PUBLIC_MONGO_LOCAL_URL)
+      .then((client) => {
+        const db = client.db();
+
+        db.collection("comments").insertOne(newComment);
+
+        res
+          .status(201)
+          .json({ message: "Added comment.", comment: newComment });
+        // client.close();
+      })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
   } else if (req.method === "GET") {
-    const dummyList = [
-      { id: "c1", name: "Max", text: "A first comment!"},
-      { id: "c2", name: "Manuel", text: "A second comment!"},
-    ];
-    res.status(200).json({ comments: dummyList });
+    MongoClient.connect(process.env.NEXT_PUBLIC_MONGO_LOCAL_URL)
+      .then((client) => {
+        const db = client.db();
+
+        db.collection("comments")
+          .find({ eventId: eventId })
+          .sort({ _id: -1 })
+          .toArray()
+          .then((comments) => {
+            res.status(200).json({ comments: comments });
+          });
+      })
+      .catch((err) => console.log(err));
   }
 };
 
