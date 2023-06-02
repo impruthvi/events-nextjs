@@ -1,6 +1,10 @@
-import { MongoClient } from "mongodb";
+import {
+  connectDatabase,
+  insertDocument,
+  getDocuments,
+} from "../../../helpers/db-util";
 
-const handler = (req, res) => {
+const handler = async (req, res) => {
   const { eventId } = req.query;
 
   const { email, name, text } = req.body;
@@ -13,36 +17,26 @@ const handler = (req, res) => {
 
     // Store it in a database
     const newComment = { eventId, text, email, name };
-
-    MongoClient.connect(process.env.NEXT_PUBLIC_MONGO_LOCAL_URL)
-      .then((client) => {
-        const db = client.db();
-
-        db.collection("comments").insertOne(newComment);
-
-        res
-          .status(201)
-          .json({ message: "Added comment.", comment: newComment });
-        // client.close();
-      })
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((err) => console.log(err));
+    let client;
+    try {
+      client = await connectDatabase();
+      await insertDocument(client, "comments", newComment);
+      client.close();
+      res.status(201).json({ message: "Added comment.", comment: newComment });
+    } catch (error) {
+      res.status(500).json({ message: "Inserting comment failed!" });
+      return;
+    }
   } else if (req.method === "GET") {
-    MongoClient.connect(process.env.NEXT_PUBLIC_MONGO_LOCAL_URL)
-      .then((client) => {
-        const db = client.db();
-
-        db.collection("comments")
-          .find({ eventId: eventId })
-          .sort({ _id: -1 })
-          .toArray()
-          .then((comments) => {
-            res.status(200).json({ comments: comments });
-          });
-      })
-      .catch((err) => console.log(err));
+    let client;
+    try {
+      client = await connectDatabase();
+      const documents = await getDocuments(client, "comments", { _id: -1 });
+      client.close();
+      res.status(200).json({ comments: documents });
+    } catch (error) {
+      res.status(500).json({ message: "Getting comments failed." });
+    }
   }
 };
 
