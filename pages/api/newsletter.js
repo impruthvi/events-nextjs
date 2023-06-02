@@ -12,7 +12,7 @@ const handler = async (req, res) => {
       client = await connectDatabase();
       insertDocument(client, "newsletter", { email });
       // client.close();
-      res.status(201).json({ message: "Signed up!" });
+      res.status(201).json({ message: "Signed up!", status: "success" });
     } catch (error) {
       res.status(500).json({ message: "Connecting to the database failed!" });
       return;
